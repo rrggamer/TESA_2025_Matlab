@@ -88,7 +88,8 @@ inputStructure.signals(18).dimensions = 1;
 
 
 
-out = sim('quadrotorsmodel2.slx');
+%out = sim('quadrotorsmodel2.slx');
+out = sim('TESA2Offense14.slx','SimulationMode','normal');
 
 Xe = out.yout{1}.Values.Data(:,1)';
 Ye = out.yout{1}.Values.Data(:,2)';

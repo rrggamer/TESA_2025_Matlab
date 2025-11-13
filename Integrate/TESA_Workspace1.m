@@ -1,14 +1,80 @@
 clc
 clear all
 
+waypoints = [ 0 0 0 0;
+    9 10 -10 1;
+    10 20 -10 1;
+    15 25 -20 1;
+    20 30 -30 1];
+timepoints = [0 5 10 15 20];
 
-load data.mat
+
+SimulationTime = 20;
+timestep = 0.01;
+
+trajectory_coef = min_snap_Coef(waypoints,timepoints);
+
+
+X =[];
+Y = [];
+Z = [];
+Psi = [];
+dX = [];
+dY = [];
+dZ = [];
+dPsi = [];
+ddX = [];
+ddY = [];
+ddZ = [];
+ddPsi = [];
+dddX = [];
+dddY = [];
+dddZ = [];
+ddddX = [];
+ddddY = [];
+ddddZ = [];
+
+
+
+tX = 0;
+tY = 0;
+tZ = 0;
+tPsi = 0;
+tdX = 0;
+tdY = 0;
+tdZ = 0;
+tdPsi = 0;
+tddX = 0;
+tddY = 0;
+tddZ = 0;
+tddPsi = 0;
+for t = 0:timestep:SimulationTime
+[tX,tY,tZ,tPsi,tdX,tdY,tdZ,tdPsi,tddX,tddY,tddZ,tddPsi,tdddX,tdddY,tdddZ,tddddX,tddddY,tddddZ] = getTrajectory(t,trajectory_coef,timepoints);
+X = [X tX];
+Y = [Y tY];
+Z = [Z tZ];
+Psi = [Psi tPsi];
+dX = [dX tdX];
+dY = [dY tdY];
+dZ = [dZ tdZ];
+dPsi = [dPsi tdPsi];
+ddX = [ddX tddX];
+ddY = [ddY tddY];
+ddZ = [ddZ tddZ];
+ddPsi = [ddPsi tddPsi];
+dddX = [dddX tdddX];
+dddY = [dddY tdddY];
+dddZ = [dddZ tdddZ];
+ddddX = [ddddX tddddX];
+ddddY = [ddddY tddddY];
+ddddZ = [ddddZ tddddZ];
+
+end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Create Variable in Simulick Workspace %%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 
 % properties of drones
@@ -21,7 +87,7 @@ I(2,2) = 0.0845;
 I(3,3) = 0.1377;
 L = 0.315; %length of arms
 
-% motor coefficient
+
 cf = 8.004e-4;
 
 % K matrix to convert motor speed to force and torques u = K . omega2
@@ -30,14 +96,11 @@ K = [1 1 1 1;
     L 0 -L 0;
     -cf cf -cf cf];
 
-Kp = eye(3,3);
-Kp = 1*Kp;
-Kv = eye(3,3);
-Kv = 1*Kv;
-Kr = eye(3,3);
-Kr = 1*Kr;
-Kw = eye(3,3);
-Kw = 1*Kw;
+
+%Kp = diag([0.9, 0.8, 7.0]);
+%Kv = diag([12.0, 12.0, 10.8]);
+%Kr = diag([6, 6, 4]);
+%Kw = diag([2.0, 2.0, 1.0]);
 
 
 
@@ -88,13 +151,11 @@ inputStructure.signals(18).dimensions = 1;
 
 
 
-out = sim('quadrotorsmodel2.slx');
+out = sim('quadrotorsmodel1.slx');
 
 Xe = out.yout{1}.Values.Data(:,1)';
 Ye = out.yout{1}.Values.Data(:,2)';
 Ze = out.yout{1}.Values.Data(:,3)';
-
-size(Xe);
 
 figure;
 subplot(3,1,1)
@@ -132,5 +193,4 @@ f2.CurrentAxes.ZDir = 'Reverse';
 xlabel('x')
 ylabel('y')
 zlabel('-z')
-
 
